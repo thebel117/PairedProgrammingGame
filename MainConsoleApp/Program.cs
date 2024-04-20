@@ -2,9 +2,9 @@
 
 namespace ShortAdventureGame
 {
-    class Program
-    {
-        static void Main (string[] args)        //Main method. Entry point. Starts off a program. Commit this to memory for as long as you code.
+class Program
+{
+static void Main (string[] args)        //Main method. Entry point. Starts off a program. Commit this to memory for as long as you code.
     {
         StartAdventure();                   
     }
@@ -577,10 +577,19 @@ static void RopeBreaks()
     switch (choice)
     {
         case "1":
-            Console.WriteLine("...Add Dialogue Here...");
+            Console.WriteLine("Your instincts tell you that the rock is the safer option.");
+            System.Console.WriteLine("However, your instincts also told you to descend a cliff with an old, decaying rappel.");
+            System.Console.WriteLine("The rock crumbles under your sheer weight, and you continue to plummet to your grave.");
+            YouAreDead();
             break;
         case "2":
-            Console.WriteLine("...Add Dialogue Here...");
+            Console.WriteLine("While the rock may seem sturdier, you know that whatever roots are anchoring the branch into the cliff make it more secure.");
+            System.Console.WriteLine("You snatch it into your grip and cling for dear life. The branch bounces a bit, but does not give way.");
+            System.Console.WriteLine("As you assess your situation, you see that there is actually a small tunnel just to the side of where the branch grows.");
+            System.Console.WriteLine("With no other options, you pull yourself in and begin an army crawl through the hole.");
+            System.Console.WriteLine("After 100 feet of crawling in total darkness, you see dim light ahead!");
+            System.Console.WriteLine("The passage spits you out into a larger subterranean complex within the mountain.");
+            SecretTunnel();
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
@@ -589,55 +598,5 @@ static void RopeBreaks()
             break;
     }
 }
-static void GrabForRocks()
-{
-    System.Console.Clear();
-    Console.WriteLine("...Add Dialogue Here...");
-
-    string? choice = Console.ReadLine();
-
-    switch (choice)
-    {
-        case "1":
-            Console.WriteLine("...Add Dialogue Here...");
-            break;
-        case "2":
-            Console.WriteLine("...Add Dialogue Here...");
-            break;
-        default:
-            Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
-            System.Console.Clear();
-            GrabForRocks(); // Rerun the method
-            break;
-    }
 }
-static void GrabForBranch()
-{
-    System.Console.Clear();
-    Console.WriteLine("...Add Dialogue Here...");
-
-    string? choice = Console.ReadLine();
-
-    switch (choice)
-    {
-        case "1":
-            Console.WriteLine("...Add Dialogue Here...");
-            break;
-        case "2":
-            Console.WriteLine("...Add Dialogue Here...");
-            break;
-        default:
-            Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
-            System.Console.Clear();
-            GrabForBranch(); // Rerun the method
-            break;
-    }
-}
-    }
-    
 };
-
-//Laundry List
-
-// Finish all the switch/cases choices for the Mountain and Swamp routes (Not done)
-// Insert AT LEAST TWO instances of Classes and Methods (DONE)
