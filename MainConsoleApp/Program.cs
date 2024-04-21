@@ -2,20 +2,36 @@
 
 namespace ShortAdventureGame
 {
-class Program
+class Program 
 {
 static void Main (string[] args)        //Main method. Entry point. Starts off a program. Commit this to memory for as long as you code.
     {
-        StartAdventure();                   
+        StartAdventure();               
     }
 
-static bool isArcherSelected = false;
+static bool isArcherSelected = false;       // Indicates whether the class is selected by the player; false, until made true via subsequent switch
 static bool isBarbarianSelected = false;
 static bool isMageSelected = false;
 
-static void StartAdventure()
+public class Player //Declares a public class for the player ----> !in future, create a sep file for 'player' that lists properties + putting adventurer details in there. Allows to expand class with more options
 {
-    Console.WriteLine("Greetings, hero! Choose your adventurer class:");
+    public string PlayerName { get; set; } // Declares a public property named PlayerName of type string with a private setter
+
+    public Player()     //The constructor for the Player class
+    {
+        PlayerName = GetNameFromInput();    //Tells the 'GetNameFromInput' method to assign its returned value 'PlayerName'
+    }
+
+    private string GetNameFromInput()       //Declares a private method called 'GetNameFromInput'
+    {
+        Console.WriteLine(" Welcome, hero! Enter your player name:");   //Asks for name in terminal
+        return Console.ReadLine();                                      // Reads name entered from terminal, returns it as a string 
+    }
+}
+static void StartAdventure()            //Kind of like a checkpoint; if you die and choose to retry, you return to this method. ---> avoid static methods until more adv projects
+{
+    Player player = new Player();  // Calls up the Player class to get the player's name
+    Console.WriteLine($"Greetings, {player.PlayerName}! Choose your adventurer class:");    
     Console.WriteLine("1. Archer");
     Console.WriteLine("2. Barbarian");
     Console.WriteLine("3. Mage");
@@ -26,53 +42,53 @@ static void StartAdventure()
     {
         case "1":
             Console.WriteLine("You have chosen the path of the Archer.");
-            isArcherSelected = true;
-            ArcherPath();
+            isArcherSelected = true;                                            //Player chooses a class, changes it to true, thus letting it show up for the "special choices" later on.
+            ArcherPath(player);
             break;
         case "2":
             Console.WriteLine("You have chosen the path of the Barbarian.");
             isBarbarianSelected = true;
-            BarbarianPath();
+            BarbarianPath(player);
             break;
         case "3":
             Console.WriteLine("You have chosen the path of the Mage.");
             isMageSelected = true;
-            MagePath();
+            MagePath(player);
             break;
         default:
             Console.WriteLine("Invalid choice. Please select a valid option.");
-            StartAdventure();
+            StartAdventure();                                           //Recursive method: strong, but avoid it--use loops instead
             break;
     }
 }
 
-static void ArcherPath()
+static void ArcherPath(Player player)        // These give the player a hint as to where their character can win most easily. 
 {
     Console.Clear();
     Console.WriteLine("As an Archer, you specialize in ranged combat with your bow. Flying beasts are no match for your aim!");
-    ChooseRoute();
+    ChooseRoute(player);            //Need to pass 'player' object as an argument when calling 'ChooseRoute' method-- not working
 }
 
-static void MagePath()
+static void MagePath(Player player)
 {
     Console.Clear();
     Console.WriteLine("As a Mage, you wield powerful magic. Dark monsters fear your radiant spells!");
-    ChooseRoute();
+    ChooseRoute(player);
 }
 
-static void BarbarianPath()
+static void BarbarianPath(Player player)
 {
     Console.Clear();
     Console.WriteLine("As a Barbarian, you are a fierce warrior of brute strength. There's nothing you can't beat in a fist-fight!");
-    ChooseRoute();
+    ChooseRoute(player);
 }
 
-static void ChooseRoute()
+static void ChooseRoute(Player player)           //First instance of a "path choice"-- all smaller decisions branch off of this biggest one.
         {
-            Console.WriteLine("Greetings, adventurer! On the road between quests, you arrive at a choice-");
-            Console.WriteLine("You have hit a fork in the road! Before you are two choices...");
-            Console.WriteLine("To the east road, a swampy lowland of murky and fog devours the horizon.");
-            Console.WriteLine("To the west road, your path stretches high into the hills, slinking into misty mountain peaks.");
+            Console.WriteLine($"Well met, {player.PlayerName}! On the road between quests, you arrive at a choice:");
+            Console.WriteLine("You have hit a fork in the road! Before you are two paths...");
+            Console.WriteLine("To the left, a swampy lowland of murky and fog devours the horizon.");
+            Console.WriteLine("To the right, your path stretches high into the hills, slinking into misty mountain peaks.");
             Console.WriteLine("How shall you proceed?:");
             Console.WriteLine("1. Through the swamp? [SWAMP ROUTE] or 2. Through the Mountains? [MOUNTAIN ROUTE]");
 
@@ -81,10 +97,10 @@ static void ChooseRoute()
             switch (routeChoice)
             {
                 case "1":
-                    GoSwamp();
+                    GoSwamp(player);
                     break;
                 case "2":
-                    GoMountains();
+                    GoMountains(player);
                     break;
                 default:
                     Console.WriteLine ("What say ye? That's not an option, adventurer. Try again...");
@@ -93,7 +109,7 @@ static void ChooseRoute()
             }
     }
 
-static void GoSwamp()                 //This Pattern of 'declare method, switch-case of choice, link to new method* is the basis of the entire game-- it's just a series of encounters and choices.
+static void GoSwamp(Player player)                 //This Pattern of 'declare method, switch-case of choice, link to new method* is the basis of the entire game-- it's just a series of encounters and choices.
 {
     System.Console.Clear();
     Console.WriteLine("As you trudge through the inky muck, you happen upon a canoe with no owner to be seen...");
@@ -108,20 +124,20 @@ static void GoSwamp()                 //This Pattern of 'declare method, switch-
     switch (choice)
     {
         case "1":                                           //Cases can have a little flavor text when selected, or all that can just be included in the "preamble" of each method.
-            BearigatorEncounter();
+            BearigatorEncounter(player);
             break;
         case "2":
-            CreepyHutEncounter();
+            CreepyHutEncounter(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            GoSwamp();
+            GoSwamp(player);
             break;
     }
 }
 
-static void BearigatorEncounter()
+static void BearigatorEncounter(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("As you paddle along, you find yourself covering distance quite quickly.");
@@ -145,13 +161,13 @@ static void BearigatorEncounter()
             Console.WriteLine("You try in vain to beat back the Bearigator with the oar, but...");
             Console.WriteLine("It was all for not. You lack the strength to deal meaningful damage.");
             Console.WriteLine("The monstrosity lunges...");
-            YouAreDead();
+            YouAreDead(player);
             // Outcome of losing the game
             break;
         case "2":
             Console.WriteLine("In a flurry of movement, you paddle as fast as you can, trying to escape the Bearigator!");
             Console.WriteLine("Against all odds, you manage to get away! Ahead you see faint veins of sunlight- the swamp's edge is near.");
-            EdgeOfArea();
+            EdgeOfArea(player);
             break;
         case "3":
             if (isMageSelected)
@@ -161,24 +177,24 @@ static void BearigatorEncounter()
                 System.Console.WriteLine("You take some time to harvest pieces of the monster's remains- these will fetch a high price at a potion-maker's shop!");
                 System.Console.WriteLine("You paddle across the remainder of the swamp without issue, eventually mooring on the opposite side");
                 System.Console.WriteLine("From what you can tell, it is only a short jaunt on foot left.");
-                EdgeOfArea();
+                EdgeOfArea(player);
             }
             else
             {
                 Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
                 Console.Clear();
-                BearigatorEncounter();
+                BearigatorEncounter(player);
             }
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            BearigatorEncounter();
+            BearigatorEncounter(player);
             break;
     }
 }
 
-static void CreepyHutEncounter()              
+static void CreepyHutEncounter(Player player)              
 {
     System.Console.Clear();
     Console.WriteLine("As you journey, you wonder if the security of dry land was truly so.");
@@ -194,22 +210,22 @@ static void CreepyHutEncounter()
     {
         case "1":
             Console.WriteLine("You steel yourself and go to knock on the door of the creepy hut...");
-            KnockOnHut();
+            KnockOnHut(player);
             break;
         case "2":
             Console.WriteLine("You decide to slink past the creepy hut.");
             Console.WriteLine("As you run, you reach the edge of the swamp.");
-            EdgeOfArea();
+            EdgeOfArea(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            CreepyHutEncounter();
+            CreepyHutEncounter(player);
             break;
     }
 }
 
-static void EdgeOfArea()          //Some methods are easier to just share between switch-case options. Things like win/loss cons that would stay the same anyway can just be recycled.
+static void EdgeOfArea(Player player)          //Some methods are easier to just share between switch-case options. Things like win/loss cons that would stay the same anyway can just be recycled.
 {
     Console.WriteLine("You can see it... you've finally reached the path onwards!");
     Console.WriteLine("Freedom lies straight ahead... Do you venture on, or linger in this place?");
@@ -227,18 +243,18 @@ static void EdgeOfArea()          //Some methods are easier to just share betwee
             Console.WriteLine("You decide to stay a little longer...");
             Console.WriteLine("A poor choice-- the dangers behind you catch up..!");
             Console.WriteLine("A terrible end, to be sure...");
-            YouAreDead();
+            YouAreDead(player);
             // Outcome of losing the game
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            EdgeOfArea();
+            EdgeOfArea(player);
             break;
     }
 }
 
-static void KnockOnHut()
+static void KnockOnHut(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("You gently tap the shambling door, quickly drawing the attention of whatever lurks inside");
@@ -262,14 +278,14 @@ static void KnockOnHut()
             Console.WriteLine("He catches your entire upper arm between two colossal fingers");
             Console.WriteLine(" \"Hehehee... Not in *my* swamp, laddie...\" ");
             Console.WriteLine("He envelopes your head in a gritty, foul fist-- and squeezes.");
-            YouAreDead();
+            YouAreDead(player);
             break;
         case "2":
             Console.WriteLine("You make a run for it, before the monster can emerge fully from his hideaway");
             Console.WriteLine("Your lungs burn as you sprint through the brush and muck...");
             Console.WriteLine("...but your struggle yields promise!");
             Console.WriteLine("Just ahead, you can see the sunlight breaching the edge of the marshland treeline!");
-            EdgeOfArea();
+            EdgeOfArea(player);
             break;
         case "3":
             if (isBarbarianSelected)
@@ -280,31 +296,32 @@ static void KnockOnHut()
                 System.Console.WriteLine(" \"G-get..out...of...my...swaaaaamp...\" ");
                 System.Console.WriteLine("The beast slain, you help yourself to his meager belongings. No sense leaving this swamp with no treasure!");
                 System.Console.WriteLine("You leave and continue down the path past the hut.");
-                EdgeOfArea();
+                EdgeOfArea(player);
             }
             else
             {
                 Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
                 Console.Clear();
-                KnockOnHut();
+                KnockOnHut(player);
             }
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            KnockOnHut();
+            KnockOnHut(player);
             break;
     }
 }
 
 
-static void YouAreDead()                    //USE THIS FOR BOTH ROUTES!
+static void YouAreDead(Player player)                    //USE THIS FOR BOTH ROUTES!
 {
-    Console.WriteLine("Your journey has met a pitiful end. Retry?");
+    Console.WriteLine($"Your journey has met a pitiful end, {player.PlayerName}. Retry?");
     Console.WriteLine("Type 'yes' to continue, or 'no' to surrender to fate");
 
-    string? retry = Console.ReadLine();
-
+    while (true)
+    {
+    string? retry = Console.ReadLine();                     //Has to be within the braces or locks out
     if (retry == "yes" || retry == "Yes" || retry == "YES")
     {
         StartAdventure();
@@ -317,13 +334,13 @@ static void YouAreDead()                    //USE THIS FOR BOTH ROUTES!
     else
     {
         Console.WriteLine("Invalid input. Please type 'yes' to continue, or 'no' to exit.");
-        YouAreDead(); // Restarts the method until valid input is typed
+    }
     }
 }
 
 // ---------------------------------------------------------------------Begin alt MOUNTAIN Route from here down-----------------------------------------------------------------//
 
-static void GoMountains()
+static void GoMountains(Player player)
     {
         System.Console.Clear();
         Console.WriteLine("You opt for the high road, and make your way up the misty mountain trail.");
@@ -339,21 +356,21 @@ static void GoMountains()
         {
             case "1":
                 Console.WriteLine("You cannot stand the biting wind and cold any longer; you decide to enter the cave.");
-                GoCavern();
+                GoCavern(player);
                 break;
             case "2":
                 Console.WriteLine("The longer you spend on this mountain, the more likely you will die. You choose to use the rappel to descend quickly.");
-                GoRappel();
+                GoRappel(player);
                 break;
             default:
                 Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
                 System.Console.Clear();
-                GoMountains();
+                GoMountains(player);
                 break;
         }
     }
 
-static void GoCavern()
+static void GoCavern(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("You enter the dark cavern entrance hidden into the mountainside.");
@@ -368,21 +385,21 @@ static void GoCavern()
     {
         case "1":
             Console.WriteLine("You press on, determined to uncover the secrets of the cavern.");
-            DragonsDen();
+            DragonsDen(player);
             break;
         case "2":
             Console.WriteLine("You decide to retreat, wary of the unknown dangers lurking within.");
             System.Console.WriteLine("You exit the mouth of the cave, and head to the rappel instead");
-            GoRappel();
+            GoRappel(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            GoCavern(); // Rerun the method
+            GoCavern(player); // Rerun the method
             break;
     }
 }
-static void DragonsDen()
+static void DragonsDen(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("As you press onward, you find yourself in a vast chamber deep within the cavern.");
@@ -402,22 +419,22 @@ static void DragonsDen()
             System.Console.WriteLine("But the beating of your heart is loud... and getting louder..?");
             System.Console.WriteLine("You realize the beating sound filling the cave isn't your heart, but a set of massive wings.");
             System.Console.WriteLine("You slowly turn to see it: an adult red dragon-- watching YOU approach her youngling!");
-            DragonEncounter(isArcherSelected);
+            DragonEncounter(isArcherSelected, player);
             break;
         case "2":
             Console.WriteLine("You quietly lurk past, not daring to provoke the dragon for mere coin.");
             System.Console.WriteLine("You stealth your way around the chamber and come upon a long and narrow passage...");
-            SecretTunnel();
+            SecretTunnel(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            DragonsDen();
+            DragonsDen(player);
             break;
     }
 }
 
-static void AvoidDragon()
+static void AvoidDragon(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("You skulk past the slumbering destroyer, carefully keeping quiet as one could.");
@@ -437,21 +454,21 @@ static void AvoidDragon()
             System.Console.WriteLine("But the beating of your heart is loud... and getting louder..?");
             System.Console.WriteLine("You realize the beating sound filling the cave isn't your heart, but a set of massive wings.");
             System.Console.WriteLine("You slowly turn to see it: an adult red dragon-- watching YOU approach her youngling!");
-            DragonEncounter(isArcherSelected);
+            DragonEncounter(isArcherSelected, player);
             break;
         case "2":
             Console.WriteLine("You are too seasoned of an adventurer to take an unnecessary risk like poking a sleeping dragon.");
             System.Console.WriteLine("You continue onward to the narrow exit of the chamber");
-            SecretTunnel();
+            SecretTunnel(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            AvoidDragon(); // Rerun the method
+            AvoidDragon(player); // Rerun the method
             break;
     }
 }
-static void DragonEncounter(bool isArcherSelected)
+static void DragonEncounter(bool isArcherSelected, Player player)
 {
     Console.WriteLine("Your situation has turned grim, to say the least");
     Console.WriteLine("The she-dragon's belly begins to glow as she readies to blow a burst of flames!");
@@ -471,12 +488,12 @@ static void DragonEncounter(bool isArcherSelected)
         case "1":
             Console.WriteLine("You make an attempt to seek mercy from the beast, hoping your pleas can translate somehow--");
             Console.WriteLine("This comes to no avail. She cranes her neck before engulfing you in flames...");
-            YouAreDead();
+            YouAreDead(player);
             break;
         case "2":
             Console.WriteLine("You make a mad dash from the chamber, clamoring your way over mounds of gold and into the long, narrow hall on the opposite side.");
             Console.WriteLine("By the skin of your teeth, and with singed eyebrows, you have managed to escape!");
-            SecretTunnel();
+            SecretTunnel(player);
             break;
         case "3":
             if (isArcherSelected)
@@ -485,25 +502,25 @@ static void DragonEncounter(bool isArcherSelected)
                 Console.WriteLine("Your arrow flies true, piercing the dragon's scales and bringing her crashing down!");
                 System.Console.WriteLine("The panicked infant dragon flutters off in fear to his injured mother.");
                 System.Console.WriteLine("With this new opportunity, you fill your satchel with gold before dashing out the exit!");
-                SecretTunnel();
+                SecretTunnel(player);
                 // Add victory scenario here
             }
             else
             {
                 Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
                 Console.Clear();
-                DragonEncounter(isArcherSelected);
+                DragonEncounter(isArcherSelected, player);
             }
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             Console.Clear();
-            DragonEncounter(isArcherSelected); // Rerun the method
+            DragonEncounter(isArcherSelected, player); // Rerun the method
             break;
     }
 } 
 
-static void SecretTunnel()
+static void SecretTunnel(Player player)
 {
     Console.WriteLine("You find yourself exiting into an ancient subterranean railway, an old Dwarven mineshaft.");
     Console.WriteLine("If you follow the mine cart tracks you are certain to emerge at the foot of the mountain eventually.");
@@ -518,22 +535,22 @@ static void SecretTunnel()
             Console.WriteLine("After hours of underground hiking, you see the light of day ahead--");
             Console.WriteLine("There, just ahead, you see it! The exit from the mountains!");
             System.Console.WriteLine("You bask in the light of day as you exit into the valleys on the opposite side of the mountains.");
-            EdgeOfArea();
+            EdgeOfArea(player);
             break;
         case "2":
             Console.WriteLine("You slink about mines, but quickly lose your way.");
             Console.WriteLine("Hours turn to days, then weeks, until your body is too weak to move.");
             Console.WriteLine("You collapse in the caves, life slipping away...");
-            YouAreDead();
+            YouAreDead(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            SecretTunnel(); // Rerun the method
+            SecretTunnel(player); // Rerun the method
             break;
     }
 }
-static void GoRappel()
+static void GoRappel(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("The rope looks ancient and the iron fasteners anchored into the rock look no younger.");
@@ -550,20 +567,20 @@ static void GoRappel()
             Console.WriteLine("The first 20 feet go smoothly... then 50 feet, then 100 feet.");
             System.Console.WriteLine("You get nearly halfway down when your luck runs out- the rope begins to fray!");
             System.Console.WriteLine("You have seconds before it snaps and you are in free-fall..!");
-            RopeBreaks();
+            RopeBreaks(player);
             break;
         case "2":
             Console.WriteLine("Having weighed out the risks, you figure that the caves are the better bet.");
-            GoCavern();
+            GoCavern(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            GoRappel(); // Rerun the method
+            GoRappel(player); // Rerun the method
             break;
     }
 }
-static void RopeBreaks()
+static void RopeBreaks(Player player)
 {
     System.Console.Clear();
     Console.WriteLine("The rope gives, and all at once you are plummeting to the ground-- NOT exactly the speedy exit you'd hoped for.");
@@ -580,7 +597,7 @@ static void RopeBreaks()
             Console.WriteLine("Your instincts tell you that the rock is the safer option.");
             System.Console.WriteLine("However, your instincts also told you to descend a cliff with an old, decaying rappel.");
             System.Console.WriteLine("The rock crumbles under your sheer weight, and you continue to plummet to your grave.");
-            YouAreDead();
+            YouAreDead(player);
             break;
         case "2":
             Console.WriteLine("While the rock may seem sturdier, you know that whatever roots are anchoring the branch into the cliff make it more secure.");
@@ -589,14 +606,14 @@ static void RopeBreaks()
             System.Console.WriteLine("With no other options, you pull yourself in and begin an army crawl through the hole.");
             System.Console.WriteLine("After 100 feet of crawling in total darkness, you see dim light ahead!");
             System.Console.WriteLine("The passage spits you out into a larger subterranean complex within the mountain.");
-            SecretTunnel();
+            SecretTunnel(player);
             break;
         default:
             Console.WriteLine("What say ye? That's not an option, adventurer. Try again...");
             System.Console.Clear();
-            RopeBreaks(); // Rerun the method
+            RopeBreaks(player); // Rerun the method
             break;
     }
-}
-}
+        }
+    }
 };
